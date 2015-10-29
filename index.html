@@ -1,21 +1,30 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" crossorigin="anonymous">
 <style>
   #map{ float: left; display: block; width: 500px; height: 600px; margin-right: 1em; background-color: #eee; }
   #myCanvas { display: block; width: 600px; height: 600px; border: 1px solid #9C9898; }
   #divContext { float: left; display: block; }
+  .form-group{ margin: 5px; margin-bottom: 1em; }
+  #address{ display: inline-block; width: 350px; font-size: 15px; }
+  .btn-go{ display: inline-block;   }
 </style>
 </head>
 
 <body>
+<div class="form-group">
+  <input class="form-control" type="text" id="address"> <button class="btn btn-go">Go</button>
+</div>
 <div id="map"></div>
 <div id="divContext">
   <canvas id="myCanvas" width="500" height="500"></canvas>
 </div>
 
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places&sensor=false"></script>
 <script>
+var map, marker;
 var loadImages = function (sources, callback) {
   var images = {};
   var loadedImages = 0;
@@ -31,10 +40,23 @@ var loadImages = function (sources, callback) {
   }
 };
 
+function geocodeAddress(geocoder, resultsMap) {
+  var address = document.getElementById('address').value;
+  geocoder.geocode({'address': address}, function(results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      map.panTo(results[0].geometry.location);
+      marker.setPosition(results[0].geometry.location);
+      imageReload(results[0].geometry.location);
+    } else {
+      alert('此地點無法解析.');
+    }
+  });
+}
+
 var imageReload = function(lat, lng){
   lat = lat || 25.03000033976827;
   lng = lng || 121.54913582462314;
-  console.log( lat, lng );
+
   var canvas = document.getElementById("myCanvas");
   var context = canvas.getContext("2d");
   var sources = {
@@ -49,12 +71,13 @@ var imageReload = function(lat, lng){
 };
 
 function initMap() {
-  var map = new google.maps.Map(document.getElementById('map'), {
+  var geocoder = new google.maps.Geocoder();
+  map = new google.maps.Map(document.getElementById('map'), {
     zoom: 15,
     center: {lat: 25.03000033976827, lng: 121.54913582462314}
   });
 
-  var marker = new google.maps.Marker({
+  marker = new google.maps.Marker({
     map: map,
     draggable: true,
     position: {lat: 25.03000033976827, lng: 121.54913582462314}
@@ -62,6 +85,11 @@ function initMap() {
 
   google.maps.event.addListener(marker, 'dragend', function(){
     imageReload( marker.getPosition().lat(), marker.getPosition().lng() );
+  });
+
+  $('.btn-go').on('click', function(e){
+    e.preventDefault();
+    geocodeAddress(geocoder, map);
   });
 
 }
