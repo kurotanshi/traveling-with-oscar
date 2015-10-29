@@ -6,15 +6,12 @@
 <style>
   #map{ float: left; display: block; width: 500px; height: 600px; margin-right: 1em; background-color: #eee; }
   #myCanvas { display: block; width: 600px; height: 600px; border: 1px solid #9C9898; }
-  #divContext { float: left; display: block; }
-<<<<<<< HEAD
-  .switch-photo {display: block; clear: both; width: 1100px;text-align: right; padding: 10px 0 0 0;}
+  #divContext { float: left; display: block; position: relative; padding: 0 0 30px 0;}
+  .switch-photo {position: absolute; text-align: right; padding: 10px 0 0 0; bottom: 0;}
   .btn-switch { font-size: 15px;}
-=======
   .form-group{ margin: 5px; margin-bottom: 1em; }
   #address{ display: inline-block; width: 350px; font-size: 15px; }
   .btn-go{ display: inline-block;   }
->>>>>>> kurotanshi/master
 </style>
 </head>
 
@@ -25,26 +22,20 @@
 <div id="map"></div>
 <div id="divContext">
   <canvas id="myCanvas" width="500" height="500"></canvas>
+  <div class="switch-photo">
+    <button class="btn-switch" data-index="01">oscar 基本款</button>
+    <button class="btn-switch" data-index="02">oscar 喝飲料</button>
+    <button class="btn-switch" data-index="03">oscar 享用在地飲品</button>
+    <button class="btn-switch" data-index="04">oscar 指著知名景點</button>
+  </div>
 </div>
-<<<<<<< HEAD
-<div class="switch-photo">
-  <button class="btn-switch" data-index="01">oscar 基本款</button>
-  <button class="btn-switch" data-index="02">oscar 喝飲料</button>
-  <button class="btn-switch" data-index="03">oscar 喝茶</button>
-  <button class="btn-switch" data-index="04">oscar 指著知名景點</button>
-</div>
-=======
-
+<input class="lat" type="hidden" value="">
+<input class="lng" type="hidden" value="">
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
->>>>>>> kurotanshi/master
 <script src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places&sensor=false"></script>
-<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
-<<<<<<< HEAD
 var photo = 'image/os01.png';
-=======
 var map, marker;
->>>>>>> kurotanshi/master
 var loadImages = function (sources, callback) {
   var images = {};
   var loadedImages = 0;
@@ -88,6 +79,9 @@ var imageReload = function(lat, lng){
     context.drawImage(images.stview, 0, 0, 500, 500);
     context.drawImage(images.oscar, 230, 240, 280, 270);
   });
+
+  $('.lat').val(lat);
+  $('.lng').val(lng);
 };
 
 function initMap() {
@@ -112,16 +106,15 @@ function initMap() {
     geocodeAddress(geocoder, map);
   });
 
+  $('.btn-switch').on('click', function(){
+    photo = 'image/os' + $(this).data('index') + '.png';
+    imageReload($('.lat').val(), $('.lng').val());
+  });
 }
 
 window.onload = function(images) {
   initMap();
   imageReload();
-
-  $('.btn-switch').on('click', function(){
-    photo = 'image/os' + $(this).data('index') + '.png';
-    imageReload();
-  });
 };
 </script>
 
