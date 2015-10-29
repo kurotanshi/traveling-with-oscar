@@ -46,7 +46,7 @@ function geocodeAddress(geocoder, resultsMap) {
     if (status === google.maps.GeocoderStatus.OK) {
       map.panTo(results[0].geometry.location);
       marker.setPosition(results[0].geometry.location);
-      imageReload(results[0].geometry.location);
+      imageReload(results[0].geometry.location.lat(), results[0].geometry.location.lng());
     } else {
       alert('此地點無法解析.');
     }
