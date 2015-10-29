@@ -1,30 +1,50 @@
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" crossorigin="anonymous">
 <style>
   #map{ float: left; display: block; width: 500px; height: 600px; margin-right: 1em; background-color: #eee; }
   #myCanvas { display: block; width: 600px; height: 600px; border: 1px solid #9C9898; }
   #divContext { float: left; display: block; }
+<<<<<<< HEAD
   .switch-photo {display: block; clear: both; width: 1100px;text-align: right; padding: 10px 0 0 0;}
   .btn-switch { font-size: 15px;}
+=======
+  .form-group{ margin: 5px; margin-bottom: 1em; }
+  #address{ display: inline-block; width: 350px; font-size: 15px; }
+  .btn-go{ display: inline-block;   }
+>>>>>>> kurotanshi/master
 </style>
 </head>
 
 <body>
+<div class="form-group">
+  <input class="form-control" type="text" id="address" placeholder="請輸入地點"> <button class="btn btn-go">Go</button>
+</div>
 <div id="map"></div>
 <div id="divContext">
   <canvas id="myCanvas" width="500" height="500"></canvas>
 </div>
+<<<<<<< HEAD
 <div class="switch-photo">
   <button class="btn-switch" data-index="01">oscar 基本款</button>
   <button class="btn-switch" data-index="02">oscar 喝飲料</button>
   <button class="btn-switch" data-index="03">oscar 喝茶</button>
   <button class="btn-switch" data-index="04">oscar 指著知名景點</button>
 </div>
+=======
+
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+>>>>>>> kurotanshi/master
 <script src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places&sensor=false"></script>
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
+<<<<<<< HEAD
 var photo = 'image/os01.png';
+=======
+var map, marker;
+>>>>>>> kurotanshi/master
 var loadImages = function (sources, callback) {
   var images = {};
   var loadedImages = 0;
@@ -40,10 +60,23 @@ var loadImages = function (sources, callback) {
   }
 };
 
+function geocodeAddress(geocoder, resultsMap) {
+  var address = document.getElementById('address').value;
+  geocoder.geocode({'address': address}, function(results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      map.panTo(results[0].geometry.location);
+      marker.setPosition(results[0].geometry.location);
+      imageReload(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+    } else {
+      alert('此地點無法解析.');
+    }
+  });
+}
+
 var imageReload = function(lat, lng){
   lat = lat || 25.03000033976827;
   lng = lng || 121.54913582462314;
-  console.log( lat, lng );
+
   var canvas = document.getElementById("myCanvas");
   var context = canvas.getContext("2d");
   var sources = {
@@ -58,12 +91,13 @@ var imageReload = function(lat, lng){
 };
 
 function initMap() {
-  var map = new google.maps.Map(document.getElementById('map'), {
+  var geocoder = new google.maps.Geocoder();
+  map = new google.maps.Map(document.getElementById('map'), {
     zoom: 15,
     center: {lat: 25.03000033976827, lng: 121.54913582462314}
   });
 
-  var marker = new google.maps.Marker({
+  marker = new google.maps.Marker({
     map: map,
     draggable: true,
     position: {lat: 25.03000033976827, lng: 121.54913582462314}
@@ -71,6 +105,11 @@ function initMap() {
 
   google.maps.event.addListener(marker, 'dragend', function(){
     imageReload( marker.getPosition().lat(), marker.getPosition().lng() );
+  });
+
+  $('.btn-go').on('click', function(e){
+    e.preventDefault();
+    geocodeAddress(geocoder, map);
   });
 
 }
