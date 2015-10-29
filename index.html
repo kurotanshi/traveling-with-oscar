@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+  #map{ float: left; display: block; width: 500px; height: 600px; margin-right: 1em; background-color: #eee; }
+  #myCanvas { display: block; width: 600px; height: 600px; border: 1px solid #9C9898; }
+  #divContext { float: left; display: block; }
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+<div id="divContext">
+  <canvas id="myCanvas" width="500" height="500"></canvas>
+</div>
+
+<script src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places&sensor=false"></script>
+<script>
+var loadImages = function (sources, callback) {
+  var images = {};
+  var loadedImages = 0;
+  var numImages = 0;
+  // get num of sources
+  for (var src in sources) { numImages++; }
+  for (var src in sources) {
+    images[src] = new Image();
+    images[src].onload = function() {
+      if (++loadedImages >= numImages) { callback(images); }
+    };
+    images[src].src = sources[src];
+  }
+};
+
+var imageReload = function(lat, lng){
+  lat = lat || 25.03000033976827;
+  lng = lng || 121.54913582462314;
+  console.log( lat, lng );
+  var canvas = document.getElementById("myCanvas");
+  var context = canvas.getContext("2d");
+  var sources = {
+    oscar: 'image/os.png',
+    stview: "https://maps.googleapis.com/maps/api/streetview?size=500x500&location="+ lat +","+ lng +"&heading=0&pitch=1"
+  };
+
+  loadImages(sources, function(images) {
+    context.drawImage(images.stview, 0, 0, 500, 500);
+    context.drawImage(images.oscar, 230, 240, 280, 270);
+  });
+};
+
+function initMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 15,
+    center: {lat: 25.034212, lng: 121.564065}
+  });
+
+  var marker = new google.maps.Marker({
+    map: map,
+    draggable: true,
+    position: {lat: 25.034212, lng: 121.564065}
+  });
+
+  google.maps.event.addListener(marker, 'dragend', function(){
+    imageReload( marker.getPosition().lat(), marker.getPosition().lng() );
+  });
+
+}
+
+window.onload = function(images) {
+  initMap();
+  imageReload();
+};
+</script>
+
+</body>
+</html>
