@@ -1,10 +1,12 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
 <style>
   #map{ float: left; display: block; width: 500px; height: 600px; margin-right: 1em; background-color: #eee; }
   #myCanvas { display: block; width: 600px; height: 600px; border: 1px solid #9C9898; }
   #divContext { float: left; display: block; }
+  .switch-photo {display: block; clear: both; width: 1100px;text-align: right; padding: 10px 0 0 0;}
+  .btn-switch { font-size: 15px;}
 </style>
 </head>
 
@@ -13,9 +15,16 @@
 <div id="divContext">
   <canvas id="myCanvas" width="500" height="500"></canvas>
 </div>
-
+<div class="switch-photo">
+  <button class="btn-switch" data-index="01">oscar 基本款</button>
+  <button class="btn-switch" data-index="02">oscar 喝飲料</button>
+  <button class="btn-switch" data-index="03">oscar 喝茶</button>
+  <button class="btn-switch" data-index="04">oscar 指著知名景點</button>
+</div>
 <script src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places&sensor=false"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
+var photo = 'image/os01.png';
 var loadImages = function (sources, callback) {
   var images = {};
   var loadedImages = 0;
@@ -38,7 +47,7 @@ var imageReload = function(lat, lng){
   var canvas = document.getElementById("myCanvas");
   var context = canvas.getContext("2d");
   var sources = {
-    oscar: 'image/os.png',
+    oscar: photo,
     stview: "https://maps.googleapis.com/maps/api/streetview?size=500x500&location="+ lat +","+ lng +"&heading=0&pitch=1"
   };
 
@@ -69,6 +78,11 @@ function initMap() {
 window.onload = function(images) {
   initMap();
   imageReload();
+
+  $('.btn-switch').on('click', function(){
+    photo = 'image/os' + $(this).data('index') + '.png';
+    imageReload();
+  });
 };
 </script>
 
