@@ -73,7 +73,7 @@ var imageReload = function(lat, lng){
   var context = canvas.getContext("2d");
   var sources = {
     oscar: photo,
-    stview: "https://maps.googleapis.com/maps/api/streetview?size=500x500&location="+ lat +","+ lng +"&heading=0&pitch=1"
+    stview: "https://maps.googleapis.com/maps/api/streetview?key=AIzaSyBxKtiOh3lYNzXBI6jjjC_oOGaqF1Z6Uy0&size=500x500&location="+ lat +","+ lng +"&heading=0&pitch=1"
   };
 
   loadImages(sources, function(images) {
