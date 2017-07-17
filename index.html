@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
 <title>traveling-with-oscar</title>
@@ -7,7 +7,9 @@
 <style>
   #map{ float: left; display: block; width: 500px; height: 600px; margin-right: 1em; background-color: #eee; }
   #myCanvas { display: block; width: 600px; height: 600px; border: 1px solid #9C9898; }
-  #divContext { float: left; display: block; }
+  #divContext { float: left; display: block; position: relative; padding: 0 0 30px 0;}
+  .switch-photo {position: absolute; text-align: right; padding: 10px 0 0 0; bottom: 0;}
+  .btn-switch { font-size: 15px;}
   .form-group{ margin: 5px; margin-bottom: 1em; }
   #address{ display: inline-block; width: 350px; font-size: 15px; }
   .btn-go{ display: inline-block;   }
@@ -21,11 +23,19 @@
 <div id="map"></div>
 <div id="divContext">
   <canvas id="myCanvas" width="500" height="500"></canvas>
+  <div class="switch-photo">
+    <button class="btn-switch" data-index="01">oscar 基本款</button>
+    <button class="btn-switch" data-index="02">oscar 喝飲料</button>
+    <button class="btn-switch" data-index="03">oscar 享用在地飲品</button>
+    <button class="btn-switch" data-index="04">oscar 指著知名景點</button>
+  </div>
 </div>
-
+<input class="lat" type="hidden" value="">
+<input class="lng" type="hidden" value="">
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="http://maps.googleapis.com/maps/api/js?libraries=drawing,places&sensor=false"></script>
+<script src="//maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyBxKtiOh3lYNzXBI6jjjC_oOGaqF1Z6Uy0"></script>
 <script>
+var photo = 'image/os01.png';
 var map, marker;
 var loadImages = function (sources, callback) {
   var images = {};
@@ -62,7 +72,7 @@ var imageReload = function(lat, lng){
   var canvas = document.getElementById("myCanvas");
   var context = canvas.getContext("2d");
   var sources = {
-    oscar: 'image/os.png',
+    oscar: photo,
     stview: "https://maps.googleapis.com/maps/api/streetview?size=500x500&location="+ lat +","+ lng +"&heading=0&pitch=1"
   };
 
@@ -70,6 +80,9 @@ var imageReload = function(lat, lng){
     context.drawImage(images.stview, 0, 0, 500, 500);
     context.drawImage(images.oscar, 230, 240, 280, 270);
   });
+
+  $('.lat').val(lat);
+  $('.lng').val(lng);
 };
 
 function initMap() {
@@ -94,6 +107,10 @@ function initMap() {
     geocodeAddress(geocoder, map);
   });
 
+  $('.btn-switch').on('click', function(){
+    photo = 'image/os' + $(this).data('index') + '.png';
+    imageReload($('.lat').val(), $('.lng').val());
+  });
 }
 
 window.onload = function(images) {
